@@ -116,7 +116,7 @@
     </div>
   {%- endif -%}
   <div class="banner__content banner__content--{{ section.settings.desktop_content_position }} page-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-    <div class="banner__box content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient">
+    <div class="banner__box content-container content-container--full-width-mobile color-{{ section.settings.color_scheme }} gradient image-banner">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'heading' -%}
@@ -160,6 +160,92 @@
                 </a>
               {%- endif -%}
             </div>
+            {%- when 'image-top' -%}
+              <div class="image-top-container">
+              {%- if block.settings.image_top != blank or block.settings.image_top_1 != blank or block.settings.image_top_2 != blank -%}
+                {% capture sizes %}
+                  (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                  (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }}),
+                  (min-width: 750px) calc((100vw - {{ grid_space_tablet }}) * {{ image_width }} / {{ number_of_columns_mobile }}),
+                  calc((100vw - {{ grid_space_mobile }}) * {{ image_width }} / {{ number_of_columns_mobile }})
+                {% endcapture %}
+                <div class="image-top-container-top">
+                {{
+                  block.settings.image_top
+                  | image_url: width: 148
+                  | image_tag:
+                    widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                    sizes: sizes,
+                    class: 'image'
+                }}
+                </div>
+                {% comment %} <div class="image-top-container-top-one">
+                {{
+                  block.settings.image_top_1
+                  | image_url: width: 100
+                  | image_tag:
+                    widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                    sizes: sizes,
+                    class: 'multicolumn-card__image'
+                }}
+                </div>
+                <div class="image-top-container-top-two">
+                {{
+                  block.settings.image_top_2
+                  | image_url: width: 100
+                  | image_tag:
+                    widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                    sizes: sizes,
+                    class: 'multicolumn-card__image'
+                }}
+                </div> {% endcomment %}
+
+              {%- endif -%}
+              </div>
+              {%- when 'image-left' -%}
+              {%- if block.settings.image_left != blank -%}
+
+                  {% capture sizes %}
+                    (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                    (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }}),
+                    (min-width: 750px) calc((100vw - {{ grid_space_tablet }}) * {{ image_width }} / {{ number_of_columns_mobile }}),
+                    calc((100vw - {{ grid_space_mobile }}) * {{ image_width }} / {{ number_of_columns_mobile }})
+                  {% endcapture %}
+
+                  {{
+                    block.settings.image_left
+                    | image_url: width: 58.48
+                    | image_tag:
+                      widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                      sizes: sizes,
+                      class: 'thumbs__image-left'
+                  }}
+
+
+              {%- endif -%}
+              {%- when 'image-right' -%}
+              {%- if block.settings.image_right != blank -%}
+                {% capture sizes %}
+                  (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                  (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }}),
+                  (min-width: 750px) calc((100vw - {{ grid_space_tablet }}) * {{ image_width }} / {{ number_of_columns_mobile }}),
+                  calc((100vw - {{ grid_space_mobile }}) * {{ image_width }} / {{ number_of_columns_mobile }})
+                {% endcapture %}
+
+                {{
+                  block.settings.image_right
+                  | image_url: width: 58.48
+                  | image_tag:
+                    widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                    sizes: sizes,
+                    class: 'thumbs__image-right'
+                }}
+              {%- endif -%}
+
+              
+            
+
+
         {%- endcase -%}
       {%- endfor -%}
     </div>
@@ -470,6 +556,52 @@
           "label": "t:sections.image-banner.blocks.buttons.settings.button_style_secondary_2.label"
         }
       ]
+    },
+    {
+      "type": "image-top",
+      "name": "image-top",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_top",
+          "label": "Image Top"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_top_1",
+          "label": "Image Layer 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_top_2",
+          "label": "Image Layer 2"
+        }
+      ]
+    },
+    {
+      "type": "image-left",
+      "name": "image-left",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_left",
+          "label": "Image Left"
+        }
+      ]
+    },
+    {
+      "type": "image-right",
+      "name": "image-right",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_right",
+          "label": "Image Right"
+        }
+      ]
     }
   ],
   "presets": [
@@ -484,6 +616,15 @@
         },
         {
           "type": "buttons"
+        },
+        {
+          "type": "image-top"
+        },
+        {
+          "type": "image-left"
+        },
+        {
+          "type": "image-right"
         }
       ]
     }

@@ -132,6 +132,8 @@
         --product-card-shadow-vertical-offset: {{ settings.card_shadow_vertical_offset | divided_by: 10.0 }}rem;
         --product-card-shadow-blur-radius: {{ settings.card_shadow_blur | divided_by: 10.0 }}rem;
 
+        --darkblue: #0b2f3d;
+
         --collection-card-image-padding: {{ settings.collection_card_image_padding | divided_by: 10.0 }}rem;
         --collection-card-corner-radius: {{ settings.collection_card_corner_radius | divided_by: 10.0 }}rem;
         --collection-card-text-alignment: {{ settings.collection_card_text_alignment }};
@@ -205,7 +207,7 @@
         --inputs-shadow-opacity: {{ settings.inputs_shadow_opacity | divided_by: 100.0 }};
         --inputs-shadow-horizontal-offset: {{ settings.inputs_shadow_horizontal_offset }}px;
         --inputs-margin-offset: {% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_opacity > 0 %}{{ settings.inputs_shadow_vertical_offset | abs }}{% else %}0{% endif %}px;
-        --inputs-shadow-vertical-offset: {{ settings.inputs_shadow_vertical_offset }}px;
+        --inputs-shadow-vertical-offset: {{ settings.inputs_shad ow_vertical_offset }}px;
         --inputs-shadow-blur-radius: {{ settings.inputs_shadow_blur }}px;
         --inputs-radius-outset: {% if settings.inputs_radius > 0 %}{{ settings.inputs_radius | plus: settings.inputs_border_thickness }}{% else %}0{% endif %}px;
 
@@ -216,6 +218,10 @@
         --variant-pills-shadow-horizontal-offset: {{ settings.variant_pills_shadow_horizontal_offset }}px;
         --variant-pills-shadow-vertical-offset: {{ settings.variant_pills_shadow_vertical_offset }}px;
         --variant-pills-shadow-blur-radius: {{ settings.variant_pills_shadow_blur }}px;
+
+        --lightyellow1: #fffcf0;
+        --lightyellow2: #fef4d0;
+        --knobbypink: #FF3366;
       }
 
       *,

@@ -10,6 +10,12 @@
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
 
+  .section-{{ section.id }}-padding  {
+    background-color: {{ section.settings.color }};
+  }
+  .card-wrapper.collage-card.color-scheme-2.gradient.product-card-wrapper {
+    background: transparent;
+}
   @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top }}px;
@@ -18,8 +24,8 @@
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient isolate">
-  <div class="page-width section-{{ section.id }}-padding">
+<div class="color-{{ section.settings.color_scheme }} isolate section-{{ section.id }}-padding">
+  <div class="page-width">
     {%- if section.settings.heading != blank -%}
       <h2 class="collage-wrapper-title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
         {{ section.settings.heading }}
@@ -88,6 +94,10 @@
                   {%- else -%}
                     {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
                   {%- endif -%}
+                </div>
+
+                <div class="content-text">
+                  {{ block.settings.custom_liquid_3 }}
                 </div>
               </div>
             {%- when 'product' -%}
@@ -254,6 +264,12 @@
   },
   "settings": [
     {
+      "type": "color",
+      "id": "color",
+      "label": "Background color",
+      "default": "#FFF"
+    },
+    {
       "type": "inline_richtext",
       "id": "heading",
       "default": "Multimedia collage",
@@ -369,6 +385,12 @@
           "type": "image_picker",
           "id": "image",
           "label": "t:sections.collage.blocks.image.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "custom_liquid_3",
+          "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+          "info": "t:sections.custom-liquid.settings.custom_liquid.info"
         }
       ]
     },

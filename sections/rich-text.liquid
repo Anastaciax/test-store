@@ -6,6 +6,10 @@
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
 
+    .section-{{ section.id }}-padding {
+    background-color: {{ section.settings.color }};
+  }
+
   @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
       padding-top: {{ section.settings.padding_top }}px;
@@ -13,8 +17,23 @@
     }
   }
 {%- endstyle -%}
+<style>
+  @keyframes rotateAnimation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
-<div class="isolate{% unless section.settings.full_width %} page-width{% endunless %}">
+
+
+</style>
+
+
+<div  class="isolate{% unless section.settings.full_width %} page-width{% endunless %}">
+
   <div class="rich-text content-container color-{{ section.settings.color_scheme }} gradient{% if section.settings.full_width %} rich-text--full-width content-container--full-width{% endif %} section-{{ section.id }}-padding">
     <div class="rich-text__wrapper rich-text__wrapper--{{ section.settings.desktop_content_position }}{% if section.settings.full_width %} page-width{% endif %}">
       <div class="rich-text__blocks {{ section.settings.content_alignment }}">
@@ -31,6 +50,9 @@
               >
                 {{ block.settings.heading }}
               </h2>
+
+
+
             {%- when 'caption' -%}
               <p
                 class="rich-text__caption {{ block.settings.text_style }} {{ block.settings.text_style }}--{{ block.settings.text_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
@@ -42,6 +64,62 @@
               >
                 {{ block.settings.caption | escape }}
               </p>
+            {%- when 'textHtml' -%}
+              <div
+            class="rich-text__text rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+            {{ block.shopify_attributes }}
+            {% if settings.animations_reveal_on_scroll %}
+              data-cascade
+              style="--animation-order: {{ forloop.index }};"
+            {% endif %}
+          >
+            {{ block.settings.textHtml }}
+          </div>
+
+          {%- if block.settings.custom_liquid_1 != blank -%}
+            <div class="icon-top-l">
+              {{ block.settings.custom_liquid_1 }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.custom_liquid_2 != blank -%}
+            <div id="{{block.id}}" class="icon-star-l">
+              {{ block.settings.custom_liquid_2 }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.custom_liquid_3 != blank -%}
+            <div class="icon-bottom-l">
+              {{ block.settings.custom_liquid_3 }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.custom_liquid_4 != blank -%}
+            <div class="icon-top-r">
+              {{ block.settings.custom_liquid_4 }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.custom_liquid_5 != blank -%}
+            <div id="{{block.id}}" class="icon-star-r">
+              {{ block.settings.custom_liquid_5 }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.custom_liquid_6 != blank -%}
+            <div class="icon-bottom-r">
+              {{ block.settings.custom_liquid_6 }}
+            </div>
+          {%- endif -%}
+
+
+          {%- if block.settings.custom_liquid_7 != blank -%}
+            <div class="icon-bottom-r">
+              {{ block.settings.custom_liquid_7 }}
+            </div>
+          {%- endif -%}
+
+
             {%- when 'text' -%}
               <div
                 class="rich-text__text rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
@@ -69,7 +147,7 @@
                     {% else %}
                       href="{{ block.settings.button_link }}"
                     {% endif %}
-                    class="button{% if block.settings.button_style_secondary %} button--secondary{% else %} button--primary{% endif %}"
+                    class="button{% if block.settings.button_style_secondary %} button--secondary{% else %} button--sign-up{% endif %}"
                   >
                     {{- block.settings.button_label | escape -}}
                   </a>
@@ -86,13 +164,17 @@
                     {{- block.settings.button_label_2 | escape -}}
                   </a>
                 {%- endif -%}
-              </div>
+              </div>                
+
           {%- endcase -%}
         {%- endfor -%}
       </div>
     </div>
   </div>
 </div>
+
+
+
 
 {% schema %}
 {
@@ -123,6 +205,12 @@
       "default": "center",
       "label": "t:sections.rich-text.settings.desktop_content_position.label",
       "info": "t:sections.rich-text.settings.desktop_content_position.info"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Background color",
+      "default": "#FFF"
     },
     {
       "type": "select",
@@ -282,6 +370,61 @@
       ]
     },
     {
+      "type": "textHtml",
+      "name": "textHtml",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "textHtml",
+          "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+          "label": "t:sections.rich-text.blocks.text.settings.text.label"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_1",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_2",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_3",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_4",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_5",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_6",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_7",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        }
+      ]
+    },
+    {
       "type": "button",
       "name": "t:sections.rich-text.blocks.buttons.name",
       "limit": 2,
@@ -336,6 +479,9 @@
         },
         {
           "type": "button"
+        },
+        {
+          "type": "textHtml"
         }
       ]
     }

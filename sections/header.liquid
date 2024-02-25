@@ -83,11 +83,20 @@
       padding-top: 0.5rem;
     }
   }
+
+  .header.header,
+  sticky-header.header-wrapper {
+    background-color: {{ section.settings.header_color }};
+  }
+  sticky-header.header-wrapper {
+    border-bottom: 2px solid #0B2F3D
+  }
 </style>
 
 {%- style -%}
   .header {
-    padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 
   .section-header {
@@ -154,7 +163,7 @@
       assign localization_forms = true
     endif
   -%}
-  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}">
+  <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} {% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}">
     {%- liquid
       if section.settings.menu != blank
         render 'header-drawer'
@@ -236,6 +245,9 @@
     {%- endif -%}
 
     <div class="header__icons{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header__icons--localization header-localization{% endif %}">
+      
+      <div class="v2__icons">
+      <button class="v2__join-btn d-none d-sm-inline-block">Join the Undie Club</button>
       <div class="desktop-localization-wrapper">
         {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
           <noscript class="small-hide medium-hide">
@@ -335,6 +347,7 @@
           </div>
         {%- endif -%}
       </a>
+    </div>
     </div>
   </header>
 </{% if section.settings.sticky_header_type != 'none' %}sticky-header{% else %}div{% endif %}>
@@ -527,6 +540,12 @@
       "info": "t:sections.header.settings.logo_help.content"
     },
     {
+      "type": "color",
+      "id": "header_color",
+      "label": "Background Header color",
+      "default": "#FF3366"
+    },
+    {
       "type": "link_list",
       "id": "menu",
       "default": "main-menu",
@@ -667,7 +686,7 @@
       "step": 4,
       "unit": "px",
       "label": "t:sections.all.padding.padding_top",
-      "default": 20
+      "default": 16
     },
     {
       "type": "range",
@@ -677,7 +696,7 @@
       "step": 4,
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
-      "default": 20
+      "default": 16
     }
   ],
   "blocks": [

@@ -37,7 +37,7 @@
   .banner--content-align-left.banner--desktop-transparent .banner__box,
   .banner--content-align-right.banner--desktop-transparent .banner__box,
   .banner--medium.banner--desktop-transparent .banner__box {
-    max-width: 68rem;
+    max-width: 1009px;
   }
 }
 
@@ -90,7 +90,7 @@
   }
 
   .banner--medium:not(.banner--adapt) {
-    min-height: 56rem;
+    min-height: 576px;
   }
 
   .banner--large:not(.banner--adapt) {
@@ -480,4 +480,22 @@
   .banner--desktop-transparent .rte a:hover {
     color: currentColor;
   }
+}
+h2.banner__heading {
+  font-family: Tropiline;
+  font-weight: 700;
+  font-size: 72px;
+  line-height: 82.08px;
+  color: #ffff;
+}
+
+.banner__text.rte.body {
+  max-width: 617px;
+  line-height: 24.32px;
+  color: #ffff;
+}
+
+.banner__box {
+  display: flex;
+  flex-direction: column;
 }

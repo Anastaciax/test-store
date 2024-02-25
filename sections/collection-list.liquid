@@ -14,6 +14,10 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  .collection-list-wrapper  {
+    background-color: {{ section.settings.color }};
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -76,7 +80,8 @@
               card_collection: block.settings.collection,
               media_aspect_ratio: section.settings.image_ratio,
               columns: columns,
-              placeholder_image: placeholder_image
+              placeholder_image: placeholder_image,
+              class: 'card-test'
             %}
           </li>
         {%- endfor -%}
@@ -144,6 +149,12 @@
       "id": "title",
       "default": "Collections",
       "label": "t:sections.collection-list.settings.title.label"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Background color",
+      "default": "#FFF"
     },
     {
       "type": "select",

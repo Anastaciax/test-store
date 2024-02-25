@@ -1,10 +1,30 @@
 {{ 'component-image-with-text.css' | asset_url | stylesheet_tag }}
+{% assign gradient_top = section.settings.gradient_color_top %}
+{% assign gradient_second = section.settings.gradient_color_second %}
+{% assign gradient_third = section.settings.gradient_color_third %}
+{% assign gradient_bottom = section.settings.gradient_color_bottom %}
+
+{% assign gradient_bg = section.settings.gradient_bg %}
+
 
 {%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
   }
+  .section-{{ section.id }}-padding  {
+    background-color: {{ section.settings.color }};
+  }
+
+  .section-{{ section.id }}-gradient-background {
+  background: linear-gradient(
+    to bottom,
+    {{ gradient_top }},
+    {{ gradient_second }},
+    {{ gradient_third }},
+    {{ gradient_bottom }}
+  );
+}
 
   @media screen and (min-width: 750px) {
     .section-{{ section.id }}-padding {
@@ -12,6 +32,7 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
 {%- endstyle -%}
 
 {%- liquid
@@ -24,13 +45,17 @@
   endif
 -%}
 
-<div class="section-{{ section.id }}-padding gradient color-{{ section.settings.section_color_scheme }}">
+<div class="section-{{ section.id }}-padding {% if gradient_bg == true %} section-{{ section.id }}-gradient-background{% endif %} gradient section-color">
   <div class="page-width">
+
     <div class="image-with-text image-with-text--{{ section.settings.content_layout }} isolate{% if settings.text_boxes_border_thickness > 0 and settings.text_boxes_border_opacity > 0 and settings.media_border_thickness > 0 and settings.media_border_opacity > 0 %} collapse-borders{% endif %}{% unless section.settings.color_scheme == section.settings.section_color_scheme and settings.media_border_thickness > 0 and settings.text_boxes_shadow_opacity == 0 and settings.text_boxes_border_thickness == 0 or settings.text_boxes_border_opacity == 0 %} collapse-corners{% endunless %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-      <div class="image-with-text__grid grid grid--gapless grid--1-col grid--{% if section.settings.desktop_image_width == 'medium' %}2-col-tablet{% else %}3-col-tablet{% endif %}{% if section.settings.layout == 'text_first' %} image-with-text__grid--reverse{% endif %}">
+      {% if section.settings.text_mobile != blank %}
+        <h2 id="{{section.id}}" class="image-with-text__heading inline-richtext h1 heading_mobile">{{section.settings.text_mobile }}</h2>
+      {% endif %}
+    <div class="image-with-text__grid grid grid--gapless grid--1-col grid--{% if section.settings.desktop_image_width == 'medium' %}2-col-tablet{% else %}3-col-tablet{% endif %}{% if section.settings.layout == 'text_first' %} image-with-text__grid--reverse{% endif %}">
         <div class="image-with-text__media-item image-with-text__media-item--{{ section.settings.desktop_image_width }} image-with-text__media-item--{{ section.settings.desktop_content_position }} grid__item">
           <div
-            class="image-with-text__media image-with-text__media--{{ section.settings.height }} global-media-settings{% unless remove_color_classes %} gradient color-{{ section.settings.color_scheme }}{% else %} background-transparent{% endunless %}{% if section.settings.image != blank %} media{% else %} image-with-text__media--placeholder placeholder{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}"
+            class="{%- if section.settings.image_mobile != blank -%}desktop-image{% endif %} image-with-text__media--{{ section.settings.height }} global-media-settings{% unless remove_color_classes %} gradient color-{{ section.settings.color_scheme }}{% else %} background-transparent{% endunless %}{% if section.settings.image != blank %} media{% else %} image-with-text__media--placeholder placeholder{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}"
             {% if section.settings.height == 'adapt' and section.settings.image != blank %}
               style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
             {% endif %}
@@ -49,17 +74,62 @@
               (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)
             {%- endcapture -%}
               {%- endif -%}
-              {{
-                section.settings.image
-                | image_url: width: 1500
-                | image_tag: sizes: sizes, widths: widths, fetchpriority: fetch_priority
-              }}
+
+            {{
+              section.settings.image
+              | image_url: width: 1500
+              | image_tag: sizes: sizes, widths: widths, fetchpriority: fetch_priority
+              
+            }}
+              
+              
             {%- else -%}
               {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
             {%- endif -%}
           </div>
+
+
+
+          {% if section.settings.image_mobile != blank %}
+          <div
+        class="mobile-image image-with-text__media--{{ section.settings.height }} global-media-settings{% unless remove_color_classes %} gradient color-{{ section.settings.color_scheme }}{% else %} background-transparent{% endunless %}{% if section.settings.image != blank %} media{% else %} image-with-text__media--placeholder placeholder{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}"
+        {% if section.settings.height == 'adapt' and section.settings.image != blank %}
+          style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
+        {% endif %}
+      >
+        {%- if section.settings.image_mobile != blank -%}
+          {%- if section.settings.image_behavior == 'ambient' or section.settings.image_behavior == 'zoom-in' -%}
+            {%- assign widths = '198, 432, 642, 900, 1284, 1800' -%}
+            {%- capture sizes -%}
+          (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 1.6667 }}px,
+          (min-width: 750px) calc((100vw - 130px) / 1.667), calc((100vw - 50px) / 1.667)
+        {%- endcapture -%}
+          {%- else -%}
+            {%- assign widths = '165, 360, 535, 750, 1070, 1500' -%}
+            {%- capture sizes -%}
+          (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px,
+          (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)
+        {%- endcapture -%}
+          {%- endif -%}
+
+        {{
+          section.settings.image_mobile
+          | image_url: width: 1500
+          | image_tag: sizes: sizes, widths: widths, fetchpriority: fetch_priority
+          
+        }}
+          
+          
+        {%- else -%}
+          {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
+
+    {%- endif -%}
+          
         </div>
         <div class="image-with-text__text-item grid__item">
+         
           <div
             id="ImageWithText--{{ section.id }}"
             class="image-with-text__content image-with-text__content--{{ section.settings.desktop_content_position }} image-with-text__content--desktop-{{ section.settings.desktop_content_alignment }} image-with-text__content--mobile-{{ section.settings.mobile_content_alignment }} image-with-text__content--{{ section.settings.height }} content-container{% unless remove_color_classes %} gradient color-{{ section.settings.color_scheme }}{% else %} background-transparent{% endunless %}"
@@ -67,12 +137,151 @@
             {%- for block in section.blocks -%}
               {% case block.type %}
                 {%- when 'heading' -%}
-                  <h2
+                  <h2 id="{{block.id}}"
                     class="image-with-text__heading inline-richtext {{ block.settings.heading_size }}"
                     {{ block.shopify_attributes }}
                   >
                     {{ block.settings.heading }}
                   </h2>
+
+                  {%- when 'textHtml' -%}
+                    <div
+                  class="rich-text__text rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                  {{ block.shopify_attributes }}
+                  {% if settings.animations_reveal_on_scroll %}
+                    data-cascade
+                    style="--animation-order: {{ forloop.index }};"
+                  {% endif %}
+                >
+                  {{ block.settings.textHtml }}
+                </div>
+      
+                {%- if block.settings.custom_liquid_1 != blank -%}
+                  <div class="">
+                    {{ block.settings.custom_liquid_1 }}
+                  </div>
+                {%- endif -%}
+      
+                {%- if block.settings.custom_liquid_2 != blank -%}
+                  <div class="">
+                    {{ block.settings.custom_liquid_2 }}
+                  </div>
+                {%- endif -%}
+      
+                {%- if block.settings.custom_liquid_3 != blank -%}
+                  <div class="">
+                    {{ block.settings.custom_liquid_3 }}
+                  </div>
+                {%- endif -%}
+      
+                {%- if block.settings.custom_liquid_4 != blank -%}
+                  <div class="">
+                    {{ block.settings.custom_liquid_4 }}
+                  </div>
+                {%- endif -%}
+      
+                {%- if block.settings.custom_liquid_5 != blank -%}
+                  <div class="">
+                    {{ block.settings.custom_liquid_5 }}
+                  </div>
+                {%- endif -%}
+      
+                {%- if block.settings.custom_liquid_6 != blank -%}
+                  <div class="">
+                    {{ block.settings.custom_liquid_6 }}
+                  </div>
+                {%- endif -%}
+      
+
+                  {%- when 'points' -%}
+                        
+                    <div class="image-wrapper">
+                      {% capture sizes %}
+                        (min-width: {{ settings.page_width }}px) calc(({{ settings.page_width }}px - {{ grid_space_desktop }}) * {{ image_width }} /  {{ number_of_columns }}),
+                        (min-width: 990px) calc((100vw - {{ grid_space_desktop }}) * {{ image_width }} / {{ number_of_columns }}),
+                        (min-width: 750px) calc((100vw - {{ grid_space_tablet }}) * {{ image_width }} / {{ number_of_columns_mobile }}),
+                        calc((100vw - {{ grid_space_mobile }}) * {{ image_width }} / {{ number_of_columns_mobile }})
+                      {% endcapture %}
+                    
+                    {%- if block.settings.image != blank -%}
+                    <div class="image-text-container">
+                      {{
+                        block.settings.image
+                        | image_url: width: 88
+                        | image_tag:
+                          widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                          sizes: sizes,
+                          class: 'inner_image'
+                      }}
+                    
+                      {%- if block.settings.text_under != blank -%}
+                      <div class="text_under">
+                        {{block.settings.text_under}}
+                      </div>
+                      {%- endif -%}
+                    </div>
+                    {%- endif -%}
+
+                    {%- if block.settings.image_1 != blank -%}
+                      <div class="image-text-container">
+                        {{
+                          block.settings.image_1
+                          | image_url: width: 88
+                          | image_tag:
+                            widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                            sizes: sizes,
+                            class: 'inner_image'
+                        }}
+                      
+                        {%- if block.settings.text_under_1 != blank -%}
+                        <div class="text_under">
+                          {{block.settings.text_under_1}}
+                        </div>
+                        {%- endif -%}
+                      </div>
+                      {%- endif -%}
+
+                      {%- if block.settings.image_2 != blank -%}
+                        <div class="image-text-container">
+                          {{
+                            block.settings.image_2
+                            | image_url: width: 88
+                            | image_tag:
+                              widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                              sizes: sizes,
+                              class: 'inner_image'
+                          }}
+                        
+                          {%- if block.settings.text_under_2 != blank -%}
+                          <div class="text_under">
+                            {{block.settings.text_under_2}}
+                          </div>
+                          {%- endif -%}
+                        </div>
+                        {%- endif -%}
+
+                        {%- if block.settings.image_3 != blank -%}
+                          <div class="image-text-container">
+                            {{
+                              block.settings.image_3
+                              | image_url: width: 88
+                              | image_tag:
+                                widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                                sizes: sizes,
+                                class: 'inner_image'
+                            }}
+                          
+                            {%- if block.settings.text_under_3 != blank -%}
+                            <div class="text_under">
+                              {{block.settings.text_under_3}}
+                            </div>
+                            {%- endif -%}
+                          </div>
+                          {%- endif -%}
+                    
+                    </div>
+                    
+
                 {%- when 'caption' -%}
                   <p
                     class="image-with-text__text image-with-text__text--caption {{ block.settings.text_style }} {{ block.settings.text_style }}--{{ block.settings.text_size }} {{ block.settings.text_style }}"
@@ -98,14 +307,20 @@
                       {{ block.settings.button_label | escape }}
                     </a>
                   {%- endif -%}
+
+
+
               {%- endcase -%}
+
             {%- endfor -%}
+
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 
 {% schema %}
 {
@@ -116,9 +331,56 @@
   },
   "settings": [
     {
+    "type": "text",
+      "id": "text_mobile",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+    },
+    {
       "type": "image_picker",
       "id": "image",
       "label": "t:sections.image-with-text.settings.image.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "t:sections.image-with-text.settings.image.label"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Background color",
+      "default": "#FFF"
+    },
+    {
+          "type": "checkbox",
+          "id": "gradient_bg",
+          "default": false,
+          "label": "Gradient Background"
+     },
+    {
+      "type": "color",
+      "id": "gradient_color_top",
+      "label": "Gradient Top Color",
+      "default": "#d7cce4"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_second",
+      "label": "Gradient Second Color",
+      "default": "#e1d7f0"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_third",
+      "label": "Gradient Third Color",
+      "default": "#cdbfe3"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_bottom",
+      "label": "Gradient Bottom Color",
+      "default": "#b7a6d3"
     },
     {
       "type": "select",
@@ -321,7 +583,37 @@
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 36
-    }
+    },
+    {
+    "type": "text",
+      "id": "custom_liquid_1",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_2",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_3",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_4",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_5",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        }
   ],
   "blocks": [
     {
@@ -356,6 +648,106 @@
           "label": "t:sections.all.heading_size.label"
         }
       ]
+    },
+    {
+      "type": "textHtml",
+      "name": "textHtml",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "textHtml",
+          "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+          "label": "t:sections.rich-text.blocks.text.settings.text.label"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_1",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_2",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_3",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_4",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_5",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        },
+        {
+      "type": "text",
+      "id": "custom_liquid_6",
+      "label": "t:sections.custom-liquid.settings.custom_liquid.label",
+      "info": "t:sections.custom-liquid.settings.custom_liquid.info"
+        }
+      ]
+    },
+    {
+      "type": "points",
+      "name": "points",
+      "limit": 1,
+      "settings": [
+      {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+      },
+      {
+          "type": "text",
+          "id": "text_under",
+          "default": "Add Text",
+          "label": "Add Text"
+      },
+      {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image"
+      },
+      {
+          "type": "text",
+          "id": "text_under_1",
+          "default": "Add Text",
+          "label": "Add Text"
+      },
+      {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image"
+      },
+      {
+          "type": "text",
+          "id": "text_under_2",
+          "default": "Add Text",
+          "label": "Add Text"
+      },
+      {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image"
+      },
+      {
+          "type": "text",
+          "id": "text_under_3",
+          "default": "Add Text",
+          "label": "Add Text"
+      }
+    ]
     },
     {
       "type": "caption",
@@ -438,7 +830,7 @@
     {
       "type": "button",
       "name": "t:sections.image-with-text.blocks.button.name",
-      "limit": 1,
+      "limit": 2,
       "settings": [
         {
           "type": "text",
@@ -473,6 +865,9 @@
         },
         {
           "type": "button"
+        },
+        {
+          "type": "points"
         }
       ]
     }
