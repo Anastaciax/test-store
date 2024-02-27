@@ -1274,3 +1274,21 @@ class ProductRecommendations extends HTMLElement {
 
 customElements.define('product-recommendations', ProductRecommendations);
 
+document.addEventListener('DOMContentLoaded', (event) => {
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target); 
+      }
+    });
+  }, {
+    rootMargin: '0px',
+    threshold: 0.1 
+  });
+
+  const targets = document.querySelectorAll('.image-text-container img');
+  targets.forEach((target) => {
+    observer.observe(target);
+  });
+});
